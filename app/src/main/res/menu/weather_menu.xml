@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#3F51B5"
+    tools:context=".MainActivity">
+
+    <item android:id="@+id/weather_menu"
+        android:title="Select City"/>
+    <item android:id="@+id/info_menu"
+        android:title="Info"/>
+</menu>
