@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MyOpenWeather</string>
+    <string name="token" >
+        "pk.eyJ1IjoiZWJhcmJlaXRvIiwiYSI6ImNqcHUzd3k1bzAzang0OHFydmZ4Nnloa3cifQ.dd2vH9KxslMdsyjgtEUQtw"
+    </string>
+
 </resources>

@@ -2,11 +2,18 @@ package com.example.myopenweather;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,21 +32,21 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    /*TODO: -->> CAMBIAR EL BACKGROUND_COLOR DEL MENU (esta en verde xd)
-                 PLANTEAR como mostraremos el RECYCLERVIEWER
-    */
-
-
-    TextView selectCity, cityField, detailsField, currentTemperatureField, humidity_field, pressure_field, weatherIcon, updatedField;
-    ProgressBar loader;
-    Typeface weatherFont;
-    String city = "Barcelona, SPN"; //CIUDAD POR DEFECTO
-    String OPEN_WEATHER_MAP_API = "275d21f98ce6515e48e663fce25dd1f6";
+    private TextView selectCity, cityField, detailsField, currentTemperatureField, humidity_field, pressure_field, weatherIcon, updatedField;
+    private ProgressBar loader;
+    private Typeface weatherFont;
+    private String city = "Barcelona, SPN"; //CIUDAD POR DEFECTO
+    final static String OPEN_WEATHER_MAP_API = "275d21f98ce6515e48e663fce25dd1f6";
+    private ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //TODOS LOS TEXTVIEW MUESTRAN EL PRONOSTICO DEL TIEMPO
         super.onCreate(savedInstanceState);             //UTILIZO ICONOS PARA MOSTRAR LOS DIFERENTES PRONOTISCOS(SOLEADO, NUBLADO, ETC) -- SE ENCUENTRAN EN LA CARPETA ASSESTS/FONTS/
         setContentView(R.layout.activity_main);
+
+        actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3F51B5")));
+
         loader = (ProgressBar) findViewById(R.id.loader);
         selectCity = (TextView) findViewById(R.id.selectCity);
         cityField = (TextView) findViewById(R.id.city_field);
@@ -49,7 +56,10 @@ public class MainActivity extends AppCompatActivity {
         humidity_field = (TextView) findViewById(R.id.humidity_field);
         pressure_field = (TextView) findViewById(R.id.pressure_field);
         weatherIcon = (TextView) findViewById(R.id.weather_icon);
-        weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf"); //Iconos del tiempo
+        //weatherFont = Typeface.createFromAsset(getAssets(), "/fonts/weathericons-regular-webfont.ttf"); //Iconos del tiempo
+        weatherFont = ResourcesCompat.getFont(this, R.font.weathericonsfont);
+        //Typeface typeface = ResourcesCompat.getFont(context, R.font.myfont);
+
         weatherIcon.setTypeface(weatherFont);
         LoadCity(city);
 
@@ -82,13 +92,12 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
-
     }
 
-    public void LoadCity(String query) { //void para cargar la ciudad
+    public void LoadCity(String city) { //void para cargar la ciudad
         if (Function.isNetworkAvailable(getApplicationContext())) {
             DownloadWeather downloadWeather = new DownloadWeather();
-            downloadWeather.execute(query);
+            downloadWeather.execute(city);
         } else {
             Toast.makeText(getApplicationContext(), "Sin conexion a internet", Toast.LENGTH_LONG).show();
         }
@@ -101,11 +110,14 @@ public class MainActivity extends AppCompatActivity {
             loader.setVisibility(View.VISIBLE);
 
         }
+
+        @Override
         protected String doInBackground(String...args) {
             String xml = Function.excuteGet("http://api.openweathermap.org/data/2.5/weather?q=" + args[0] +
                     "&units=metric&appid=" + OPEN_WEATHER_MAP_API);
             return xml;
         }
+
         @Override
         protected void onPostExecute(String xml) {
 
@@ -133,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -178,8 +189,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.info_menu){ //aqui habria que crear un intent con el fragment para mostrar el RecyclerViewer o en su defecto mostrar los resultados en la actividad principal
+
+            //TODO -- Crear un intent con RecyclerViewerClass
+            Intent intent = new Intent(this, RecyclerVieweresList.class);
+            intent.putExtra("city", city);
+            startActivity(intent);
+            //Log.d("Intent", String.valueOf(intent));
             return true;
         }
+
+        if (id == R.id.map_box_menu){
+
+            Intent intent = new Intent(this, Map.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

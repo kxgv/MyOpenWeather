@@ -8,4 +8,6 @@
         android:title="Select City"/>
     <item android:id="@+id/info_menu"
         android:title="Info"/>
+    <item android:id="@+id/map_box_menu"
+        android:title="See MapBox"/>
 </menu>
